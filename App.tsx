@@ -42,7 +42,19 @@ const App: React.FC = () => {
     let count = 0;
     let sumMX = 0, sumMY = 0, sumMZ = 0;
 
-    const loadedItems = items.filter(i => i.position[1] >= 0 && i.position[0] < container.length);
+    // 修复逻辑：不仅要检查 X 和 Y，还要检查 Z 轴位置。
+    // 待装区(Staging Area)通常放置在 container.width 之外。
+    const loadedItems = items.filter(i => {
+      const centerX = i.position[0] + i.dimensions.length / 2;
+      const centerY = i.position[1] + i.dimensions.height / 2;
+      const centerZ = i.position[2] + i.dimensions.width / 2;
+      
+      return (
+        centerX >= 0 && centerX <= container.length &&
+        centerY >= 0 && // 允许上方稍微超出（如果需要），但底部不能在地下太深
+        centerZ >= 0 && centerZ <= container.width
+      );
+    });
 
     loadedItems.forEach(item => {
       const vol = item.dimensions.length * item.dimensions.width * item.dimensions.height;
@@ -124,7 +136,12 @@ const App: React.FC = () => {
       theme: 'grid'
     });
 
-    const packedItems = items.filter(i => i.position[1] >= 0 && i.position[0] < container.length);
+    const packedItems = items.filter(i => {
+      const centerX = i.position[0] + i.dimensions.length / 2;
+      const centerZ = i.position[2] + i.dimensions.width / 2;
+      return centerX >= 0 && centerX <= container.length && centerZ >= 0 && centerZ <= container.width;
+    });
+    
     const tableData = packedItems.map((item, idx) => [
       idx + 1,
       item.drawingNo,
