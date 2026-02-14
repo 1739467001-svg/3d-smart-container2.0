@@ -1,0 +1,5 @@
+{
+  "name": "SmartContainer - 3D Load Planner",
+  "description": "A 3D visualization tool for container load planning. Upload CSV manifests, automatically optimize stacking, and manually adjust cargo positions to ensure packing list accuracy.",
+  "requestFramePermissions": []
+}
